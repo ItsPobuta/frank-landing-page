@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>frank. — Senior Care's Credentialed Trust Infrastructure</title>
+  <meta name="description" content="Frank is the institutional trust layer senior care has never had. A governed credentialing standard, built from the board out.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0d0d0d;
+      --dark: #1a1a1a;
+      --mid: #505050;
+      --light: #909090;
+      --rule: #dcdcd8;
+      --rule-light: #ebebea;
+      --bg: #f8f8f5;
+      --bg-warm: #f3f3ef;
+      --white: #ffffff;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', Helvetica, sans-serif;
+      --accent: #0d0d0d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(248,248,245,0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s;
+    }
+    nav.scrolled {
+      border-color: var(--rule);
+      background: rgba(248,248,245,0.97);
+    }
+
+    .nav-logo {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--light);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--black);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--black); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      font-size: 0.72rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      color: var(--white) !important;
+      background: var(--black) !important;
+      padding: 0.55rem 1.3rem !important;
+      text-decoration: none !important;
+      transition: opacity 0.2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { opacity: 0.75 !important; }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 9rem 3rem 6rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      top: 50%;
+      right: -0.04em;
+      transform: translateY(-50%);
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(260px, 38vw, 500px);
+      line-height: 1;
+      color: var(--black);
+      opacity: 0.050;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 1200px; }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 36px;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .hero-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(3rem, 7.5vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      color: var(--black);
+      max-width: 13ch;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.35s;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-rule {
+      width: 56px;
+      height: 2px;
+      background: var(--black);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: scaleIn 0.6s ease forwards 0.55s;
+      transform-origin: left;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      font-weight: 300;
+      color: var(--mid);
+      max-width: 55ch;
+      line-height: 1.75;
+      margin-bottom: 4rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.65s;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 1rem 2.2rem;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.80; transform: translateY(-2px); }
+
+    .btn-secondary {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      border: 1.5px solid var(--black);
+      padding: 1rem 2.2rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-secondary:hover {
+      background: var(--black);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .hero-meta {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 1.4s;
+    }
+    .hero-meta-line {
+      width: 1px;
+      height: 50px;
+      background: var(--rule);
+    }
+    .hero-meta-text {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--light);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    /* ── SECTION SHARED ───────────────────────────────── */
+    section {
+      padding: 8rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .full-bleed {
+      max-width: none !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+      margin-bottom: 5rem;
+    }
+
+    /* ── PROBLEM ──────────────────────────────────────── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .problem-sticky {
+      position: sticky;
+      top: 8rem;
+    }
+
+    .problem-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      margin-bottom: 2.5rem;
+    }
+    .problem-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+
+    .problem-intro {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.75;
+      max-width: 38ch;
+    }
+
+    .problem-items { display: flex; flex-direction: column; }
+
+    .problem-item {
+      padding: 2.2rem 0;
+      border-bottom: 1px solid var(--rule);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .problem-item:first-child { border-top: 1px solid var(--rule); }
+    .problem-item.visible { opacity: 1; transform: translateY(0); }
+
+    .problem-item-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .problem-item-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--light);
+    }
+
+    .problem-item-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--rule);
+    }
+
+    .problem-item h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.015em;
+    }
+
+    .problem-item p {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ── PULLQUOTE ────────────────────────────────────── */
+    .pullquote-section {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 8rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .pullquote-section::before {
+      content: '"';
+      position: absolute;
+      top: -0.25em;
+      left: 1.5rem;
+      font-family: var(--serif);
+      font-size: clamp(200px, 25vw, 360px);
+      line-height: 1;
+      color: var(--black);
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    .pullquote-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .pullquote {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 2.8vw, 2.5rem);
+      font-style: italic;
+      line-height: 1.45;
+      color: var(--black);
+      margin-bottom: 2.5rem;
+    }
+
+    .pullquote-footer {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .pullquote-line {
+      width: 40px;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .pullquote-attr {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--light);
+    }
+
+    /* ── THREE LAYERS ─────────────────────────────────── */
+    .layers-header {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 5rem;
+      align-items: end;
+      margin-bottom: 4rem;
+    }
+
+    .layers-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+    .layers-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+
+    .layers-intro {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    .layers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--rule);
+    }
+
+    .layer-card {
+      padding: 3rem 2.5rem;
+      border-right: 1px solid var(--rule);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease, background 0.25s;
+    }
+    .layer-card:last-child { border-right: none; }
+    .layer-card.visible { opacity: 1; transform: translateY(0); }
+    .layer-card:hover { background: var(--bg-warm); }
+
+    .layer-num {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--rule);
+      margin-bottom: 2rem;
+    }
+
+    .layer-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--black);
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .layer-rule {
+      width: 28px;
+      height: 1.5px;
+      background: var(--rule);
+      margin-bottom: 1.2rem;
+      transition: width 0.3s ease;
+    }
+    .layer-card:hover .layer-rule { width: 48px; background: var(--black); }
+
+    .layer-desc {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ── BOARD SECTION ────────────────────────────────── */
+    .board-header {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 5rem;
+      align-items: end;
+      margin-bottom: 4rem;
+    }
+
+    .board-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+    .board-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+
+    .board-intro {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    .seats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-top: 1px solid var(--rule);
+      border-left: 1px solid var(--rule);
+      margin-bottom: 4rem;
+    }
+
+    .seat {
+      padding: 2.5rem 1.8rem 2.5rem 1.8rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease, background 0.25s;
+    }
+    .seat.visible { opacity: 1; transform: translateY(0); }
+    .seat:hover { background: var(--bg-warm); }
+
+    .seat-num {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--rule);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 1.2rem;
+    }
+
+    .seat-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+    }
+
+    .seat-desc {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.65;
+    }
+
+    .board-commitment {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .commitment-title {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 2rem;
+    }
+
+    .commitment-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .commitment-list li {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--mid);
+      padding-left: 1.5rem;
+      position: relative;
+      line-height: 1.55;
+    }
+    .commitment-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--rule);
+    }
+
+    /* ── CHARTER MEMBERS ──────────────────────────────── */
+    .charter-section {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .charter-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .charter-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.8rem;
+    }
+    .charter-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+
+    .charter-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .charter-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: var(--white);
+      border: 1px solid var(--rule);
+    }
+
+    .stat-item {
+      padding: 2.5rem 2.2rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      transition: background 0.25s;
+    }
+    .stat-item:hover { background: var(--bg-warm); }
+
+    .stat-num {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 2.2rem;
+      letter-spacing: -0.045em;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--light);
+      letter-spacing: 0.05em;
+      line-height: 1.45;
+    }
+      font-size: 2.2rem;
+      letter-spacing: -0.045em;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--light);
+      letter-spacing: 0.05em;
+      line-height: 1.45;
+    }
+
+    /* ── CTA ──────────────────────────────────────────── */
+    .cta-section {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--rule);
+      padding: 9rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-bg-text {
+      position: absolute;
+      bottom: -0.15em;
+      right: -0.02em;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(160px, 24vw, 360px);
+      line-height: 1;
+      color: var(--black);
+      opacity: 0.04;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+    }
+
+    .cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      color: var(--black);
+    }
+    .cta-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+
+    .cta-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .cta-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.3rem 1.6rem;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      margin-bottom: 0.5rem;
+      color: var(--black);
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .cta-link:hover {
+      background: var(--bg);
+      border-color: var(--mid);
+    }
+    .cta-link:hover .cta-arrow {
+      color: var(--black);
+      transform: translateX(5px);
+    }
+
+    .cta-link-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--light);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .cta-link-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--black);
+    }
+
+    .cta-arrow {
+      font-size: 1.1rem;
+      color: var(--light);
+      transition: color 0.2s, transform 0.25s;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────── */
+    footer {
+      padding: 2.2rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
+      color: var(--black);
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--black); }
+
+    .footer-meta {
+      font-size: 0.7rem;
+      color: var(--light);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── CARE NAVIGATOR ───────────────────────────────── */
+    .navigator-banner {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 5rem 3rem;
+    }
+    .navigator-banner-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4rem;
+      align-items: center;
+    }
+    .navigator-banner-eyebrow {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 1rem;
+    }
+    .navigator-banner-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: var(--black);
+      margin-bottom: 1rem;
+    }
+    .navigator-banner-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+    .navigator-banner-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.75;
+      max-width: 58ch;
+    }
+    .navigator-cta-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      padding: 2.5rem 2.8rem;
+      min-width: 240px;
+      flex-shrink: 0;
+    }
+    .navigator-price-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 0.5rem;
+    }
+    .navigator-price {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 2.6rem;
+      letter-spacing: -0.04em;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .navigator-price-sub {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--light);
+      margin-bottom: 1.8rem;
+    }
+    .navigator-section {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 8rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .navigator-section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+    .navigator-section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 1.5rem;
+    }
+    .navigator-section-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+      margin-bottom: 3.5rem;
+    }
+    .navigator-section-headline {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      letter-spacing: -0.03em;
+      line-height: 1.04;
+      color: var(--black);
+      margin-bottom: 2rem;
+    }
+    .navigator-section-headline em {
+      font-style: italic;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+    .navigator-section-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .navigator-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 3rem;
+    }
+    .navigator-feature {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .navigator-feature:first-child { border-top: 1px solid var(--rule); }
+    .navigator-feature-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--rule);
+      padding-top: 0.15rem;
+      flex-shrink: 0;
+    }
+    .navigator-feature-text h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+    .navigator-feature-text p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.65;
+    }
+    .navigator-purchase-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      padding: 3rem;
+      height: fit-content;
+      position: sticky;
+      top: 8rem;
+    }
+    .navigator-purchase-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .navigator-purchase-price {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 3.5rem;
+      letter-spacing: -0.05em;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .navigator-purchase-desc {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--light);
+      margin-bottom: 2.5rem;
+    }
+    .navigator-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 2.5rem;
+    }
+    .navigator-checklist li {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--mid);
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .navigator-checklist li::before {
+      content: '✓';
+      font-size: 0.75rem;
+      color: var(--light);
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+    .btn-white {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 1rem 2rem;
+      text-decoration: none;
+      text-align: center;
+      transition: opacity 0.2s, transform 0.2s;
+      width: 100%;
+    }
+    .btn-white:hover { opacity: 0.80; transform: translateY(-2px); }
+
+    /* ── ANIMATIONS ───────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scaleX(0); }
+      to   { opacity: 1; transform: scaleX(1); }
+    }
+
+    /* ── DIVIDER ──────────────────────────────────────── */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .seats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 5rem; }
+      section { padding: 5rem 1.5rem; }
+      .problem-grid,
+      .layers-header,
+      .board-header,
+      .charter-inner,
+      .cta-inner,
+      .board-commitment,
+      .navigator-banner-inner,
+      .navigator-section-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .layers-grid { grid-template-columns: 1fr; }
+      .layer-card { border-right: none; border-bottom: 1px solid var(--rule); }
+      .layer-card:last-child { border-bottom: none; }
+      .seats-grid { grid-template-columns: repeat(2, 1fr); }
+      .problem-sticky { position: static; }
+      .pullquote-section,
+      .cta-section,
+      .navigator-section { padding: 5rem 1.5rem; }
+      .navigator-banner { padding: 3.5rem 1.5rem; }
+      .navigator-purchase-card { position: static; }
+      .charter-section { padding: 5rem 1.5rem !important; }
+      .charter-stats { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+      .footer-right { flex-direction: column; gap: 1rem; }
+      .hero-meta { display: none; }
+    }
+
+    @media (max-width: 580px) {
+      .seats-grid { grid-template-columns: 1fr; }
+      .hero-headline { font-size: 2.6rem; }
+      .charter-stats { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#top" class="nav-logo">frank.</a>
+    <ul class="nav-links">
+      <li><a href="#why">Why Frank</a></li>
+      <li><a href="#model">The Model</a></li>
+      <li><a href="#board">The Board</a></li>
+      <li><a href="#charter">Charter Members</a></li>
+      <li><a href="#navigator">Care Navigator</a></li>
+      <li><a href="#contact" class="nav-cta">Get Involved</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="hero-bg-text" aria-hidden="true">frank.</div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Senior Care &nbsp;·&nbsp; Credentialed Trust Infrastructure &nbsp;·&nbsp; 2026</p>
+      <h1 class="hero-headline">The standard senior care has <em>never had.</em></h1>
+      <div class="hero-rule"></div>
+      <p class="hero-sub">Frank is a governed credentialing model, a B2B network, and a consumer mark — built in that order, from the board out. The industry is $450 billion. The trust infrastructure is nonexistent. That ends here.</p>
+      <div class="hero-actions">
+        <a href="#board" class="btn-primary">Join the Governing Board</a>
+        <a href="#charter" class="btn-secondary">Become a Charter Member</a>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <span class="hero-meta-text">Scroll to explore</span>
+      <div class="hero-meta-line"></div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section id="why">
+    <p class="section-label">01 &nbsp;·&nbsp; Why Frank Exists</p>
+    <div class="section-rule"></div>
+    <div class="problem-grid">
+      <div class="problem-sticky">
+        <h2 class="problem-headline">The deeper problem is <em>structural.</em></h2>
+        <p class="problem-intro">Senior care is one of the largest and most consequential industries in America. It has no institutional trust layer. Every participant is navigating blind.</p>
+      </div>
+      <div class="problem-items">
+        <div class="problem-item">
+          <div class="problem-item-header">
+            <span class="problem-item-label">Families</span>
+            <span class="problem-item-num">01</span>
+          </div>
+          <h3>Navigating blind.</h3>
+          <p>When a family needs to place a parent in a skilled nursing facility, they have no trusted, independent signal to rely on. They Google and hope.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-item-header">
+            <span class="problem-item-label">Operators</span>
+            <span class="problem-item-num">02</span>
+          </div>
+          <h3>Cannot verify who they work with.</h3>
+          <p>Every vendor claims 20 years of experience and a spotless record. None of it is verified. Procurement defaults to price and relationships — not demonstrated quality.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-item-header">
+            <span class="problem-item-label">Discharge Planners</span>
+            <span class="problem-item-num">03</span>
+          </div>
+          <h3>Default to familiarity.</h3>
+          <p>Hospital discharge decisions — among the most consequential moments in post-acute care — are driven by who called last week, not who has the best outcomes.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-item-header">
+            <span class="problem-item-label">Investors</span>
+            <span class="problem-item-num">04</span>
+          </div>
+          <h3>No institutional trust layer.</h3>
+          <p>Private equity entering senior care at record pace has no framework for evaluating operator quality. Due diligence is relationship-dependent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PULLQUOTE -->
+  <div class="pullquote-section full-bleed">
+    <div class="pullquote-inner">
+      <p class="pullquote">"No credential. No independent verification. Just relationships, reputation, and luck."</p>
+      <div class="pullquote-footer">
+        <div class="pullquote-line"></div>
+        <p class="pullquote-attr">The state of senior care today</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARE NAVIGATOR BANNER -->
+  <div class="navigator-banner">
+    <div class="navigator-banner-inner">
+      <div>
+        <p class="navigator-banner-eyebrow">For Families &nbsp;·&nbsp; The Frank Care Navigator</p>
+        <h2 class="navigator-banner-headline">The document your family needs <em>before</em> the crisis hits.</h2>
+        <p class="navigator-banner-body">Most families begin researching senior care facilities in the middle of an emergency. The Frank Care Navigator is a plain-language guide that walks families through exactly what to ask, what to look for, and what the data actually means — so when the moment comes, you are not starting from zero. Written by people who have seen what happens when families are not prepared.</p>
+      </div>
+      <div class="navigator-cta-box">
+        <p class="navigator-price-label">One-Time Purchase</p>
+        <p class="navigator-price">$25.99</p>
+        <p class="navigator-price-sub">Instant digital download</p>
+        <a href="mailto:hello@whatsfrank.com?subject=Care Navigator Purchase" class="btn-primary" style="width:100%; text-align:center;">Get the Navigator</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE LAYERS -->
+  <section id="model">
+    <p class="section-label">02 &nbsp;·&nbsp; What Frank Is Building</p>
+    <div class="section-rule"></div>
+    <div class="layers-header">
+      <h2 class="layers-headline">Three layers. One <em>institution.</em></h2>
+      <p class="layers-intro">Frank is not a directory, a staffing platform, or a trade publication. It is the institutional trust layer this industry has never had — built in a deliberate sequence.</p>
+    </div>
+    <div class="layers-grid">
+      <div class="layer-card">
+        <p class="layer-num">01</p>
+        <h3 class="layer-title">The Credentialing Model</h3>
+        <div class="layer-rule"></div>
+        <p class="layer-desc">A governed, multi-factor scoring methodology. Not self-reported. Not purchased. Not algorithmic. Verified by Frank, governed by the board. Every credentialed entity carries a Frank score that is earned, maintained, and subject to review.</p>
+      </div>
+      <div class="layer-card">
+        <p class="layer-num">02</p>
+        <h3 class="layer-title">The B2B Network</h3>
+        <div class="layer-rule"></div>
+        <p class="layer-desc">Once the credentialing model is established, Frank becomes the platform where credentialed parties transact. Operators sourcing vendors. Investors evaluating operators. Discharge planners identifying qualified providers. B2B commerce built on verified trust.</p>
+      </div>
+      <div class="layer-card">
+        <p class="layer-num">03</p>
+        <h3 class="layer-title">The Consumer Standard</h3>
+        <div class="layer-rule"></div>
+        <p class="layer-desc">The ultimate measure of Frank's success: families making the hardest decisions with one trusted signal. Frank Credentialed. They do not need to understand the score. They need to know the verification is real.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOARD -->
+  <section id="board" style="border-top: 1px solid var(--rule);">
+    <p class="section-label">03 &nbsp;·&nbsp; The Governing Board</p>
+    <div class="section-rule"></div>
+    <div class="board-header">
+      <h2 class="board-headline">The board is not advisory. <em>It is the standard.</em></h2>
+      <p class="board-intro">Frank's credibility is a function of its governance. The Governing Board holds binding authority over the credentialing standard — who gets in, who gets removed, and what the score actually measures. Five seats. Real accountability.</p>
+    </div>
+
+    <div class="seats-grid">
+      <div class="seat">
+        <p class="seat-num">01</p>
+        <h3 class="seat-title">Operator Voice</h3>
+        <p class="seat-desc">A senior care operator with 10+ years running facilities at scale. Clean regulatory record. No active vendor conflicts.</p>
+      </div>
+      <div class="seat">
+        <p class="seat-num">02</p>
+        <h3 class="seat-title">Clinical Voice</h3>
+        <p class="seat-desc">A physician or senior clinical leader who can evaluate clinical quality claims without deference to business interests.</p>
+      </div>
+      <div class="seat">
+        <p class="seat-num">03</p>
+        <h3 class="seat-title">Regulatory Voice</h3>
+        <p class="seat-desc">A healthcare attorney specializing in long-term care, or a former CMS or state surveyor.</p>
+      </div>
+      <div class="seat">
+        <p class="seat-num">04</p>
+        <h3 class="seat-title">Family &amp; Consumer Voice</h3>
+        <p class="seat-desc">An ombudsman or patient rights advocate. The seat that keeps the board honest about who the standard ultimately serves.</p>
+      </div>
+      <div class="seat">
+        <p class="seat-num">05</p>
+        <h3 class="seat-title">Finance &amp; Investment Voice</h3>
+        <p class="seat-desc">A PE principal, REIT representative, or family office investor with an active senior care portfolio.</p>
+      </div>
+    </div>
+
+    <div class="board-commitment">
+      <div>
+        <p class="commitment-title">The Commitment</p>
+        <ul class="commitment-list">
+          <li>Two-year terms, staggered. Maximum four years consecutive.</li>
+          <li>Binding authority over inclusion criteria, scoring methodology, and enforcement.</li>
+          <li>Annual review of the credentialing standard.</li>
+          <li>Public governance report published each year.</li>
+          <li>Annual conflict-of-interest disclosure. Mandatory recusal.</li>
+          <li>Quarterly meetings. Frank covers reasonable travel.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="commitment-title">This Is Not a Resume Line</p>
+        <p style="font-size:0.95rem; font-weight:300; color:var(--mid); line-height:1.8; margin-bottom:2rem;">The governing board is being constituted now. Seats are limited by design. If you have spent years in this industry and you know what is broken — this is the opportunity to be part of fixing it at the foundation.</p>
+        <a href="#contact" class="btn-primary">Start the Conversation</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARTER MEMBERS -->
+  <div class="charter-section full-bleed" id="charter">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 8rem 3rem;">
+      <p class="section-label">04 &nbsp;·&nbsp; Charter Members</p>
+      <div class="section-rule"></div>
+      <div class="charter-inner">
+        <div>
+          <h2 class="charter-headline">Be among the first <em>credentialed.</em></h2>
+          <p class="charter-body">Charter membership is the founding cohort of Frank. Operators, vendors, and providers who get in at the ground floor — before the standard is public, before the mark carries consumer weight, when being early still means something.</p>
+          <p class="charter-body">Charter members help shape the credentialing process, receive priority review, and carry the distinction of having held the standard from day one.</p>
+          <a href="#contact" class="btn-primary">Apply for Charter Status</a>
+        </div>
+        <div>
+          <div class="charter-stats">
+            <div class="stat-item">
+              <p class="stat-num">$450B</p>
+              <p class="stat-label">Total senior care<br>economy (US)</p>
+            </div>
+            <div class="stat-item" style="border-right:none;">
+              <p class="stat-num">61,700</p>
+              <p class="stat-label">Credentialable<br>entities</p>
+            </div>
+            <div class="stat-item" style="border-bottom:none;">
+              <p class="stat-num">0</p>
+              <p class="stat-label">Independent trust<br>standards today</p>
+            </div>
+            <div class="stat-item" style="border-right:none; border-bottom:none;">
+              <p class="stat-num">Now.</p>
+              <p class="stat-label">When to get<br>involved</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARE NAVIGATOR FULL SECTION -->
+  <div class="navigator-section" id="navigator">
+    <div class="navigator-section-inner">
+      <div>
+        <p class="navigator-section-label">For Families &nbsp;·&nbsp; The Frank Care Navigator</p>
+        <div class="navigator-section-rule"></div>
+        <h2 class="navigator-section-headline">The hardest decisions deserve <em>real information.</em></h2>
+        <p class="navigator-section-body">Choosing a skilled nursing facility or senior care provider for a parent is one of the most consequential decisions a family will ever make. It often happens fast, under stress, without time to research. Most families walk in unprepared — and the industry knows it.</p>
+        <p class="navigator-section-body">The Frank Care Navigator changes that. It is a comprehensive, plain-language guide that translates CMS inspection data, staffing ratios, deficiency reports, and ownership structures into things a family can actually use. No jargon. No sales pitch. Just the information that matters.</p>
+        <div class="navigator-features">
+          <div class="navigator-feature">
+            <span class="navigator-feature-num">01</span>
+            <div class="navigator-feature-text">
+              <h4>CMS Data Decoded</h4>
+              <p>Understand what 5-star ratings actually measure — and what they miss. Learn to read health inspection scores, staffing hours, and quality measures like an insider.</p>
+            </div>
+          </div>
+          <div class="navigator-feature">
+            <span class="navigator-feature-num">02</span>
+            <div class="navigator-feature-text">
+              <h4>The Questions to Ask on a Tour</h4>
+              <p>A facility tour is not a sales visit. The Navigator gives families the exact questions to ask — and the answers that should raise flags.</p>
+            </div>
+          </div>
+          <div class="navigator-feature">
+            <span class="navigator-feature-num">03</span>
+            <div class="navigator-feature-text">
+              <h4>Red Flags and What They Mean</h4>
+              <p>Ownership changes. Staffing turnover. Complaint deficiencies. The Navigator explains what each signal means and how much weight to give it.</p>
+            </div>
+          </div>
+          <div class="navigator-feature">
+            <span class="navigator-feature-num">04</span>
+            <div class="navigator-feature-text">
+              <h4>A Framework for Comparison</h4>
+              <p>How to compare facilities side by side — what matters most, what is negotiable, and how to make a confident decision even when every option feels imperfect.</p>
+            </div>
+          </div>
+          <div class="navigator-feature">
+            <span class="navigator-feature-num">05</span>
+            <div class="navigator-feature-text">
+              <h4>Rights, Protections &amp; Advocacy</h4>
+              <p>What rights residents and families have after placement — and who to call if something goes wrong.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="navigator-purchase-card">
+          <p class="navigator-purchase-tag">The Frank Care Navigator &nbsp;·&nbsp; Digital Guide</p>
+          <p class="navigator-purchase-price">$25.99</p>
+          <p class="navigator-purchase-desc">One-time purchase. Instant digital download. No subscription.</p>
+          <ul class="navigator-checklist">
+            <li>Complete facility evaluation framework</li>
+            <li>CMS data interpretation guide</li>
+            <li>Tour question checklist (printable)</li>
+            <li>Red flag reference sheet</li>
+            <li>Side-by-side comparison worksheet</li>
+            <li>Resident rights &amp; advocacy contacts</li>
+            <li>Updates included as the standard evolves</li>
+          </ul>
+          <a href="mailto:hello@whatsfrank.com?subject=Care Navigator Purchase" class="btn-white">Purchase the Navigator — $25.99</a>
+          <p style="font-size:0.72rem; font-weight:300; color:var(--light); text-align:center; margin-top:1.2rem; line-height:1.6;">Questions? Reach us at<br>hello@whatsfrank.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section" id="contact">
+    <div class="cta-bg-text" aria-hidden="true">frank.</div>
+    <div class="cta-inner">
+      <h2 class="cta-headline">Every conversation <em>starts somewhere.</em></h2>
+      <div>
+        <p class="cta-body">No formal process. No commitment required. The right next step is a direct conversation with the Frank team — whatever your reason for being here.</p>
+        <div class="cta-actions">
+          <a href="mailto:board@whatsfrank.com" class="cta-link">
+            <div>
+              <span class="cta-link-label">Governing Board</span>
+              <span class="cta-link-title">I'm interested in a board seat</span>
+            </div>
+            <span class="cta-arrow">→</span>
+          </a>
+          <a href="mailto:membership@whatsfrank.com" class="cta-link">
+            <div>
+              <span class="cta-link-label">Charter Membership</span>
+              <span class="cta-link-title">I want to get credentialed as a member</span>
+            </div>
+            <span class="cta-arrow">→</span>
+          </a>
+          <a href="mailto:info@whatsfrank.com" class="cta-link">
+            <div>
+              <span class="cta-link-label">General Information</span>
+              <span class="cta-link-title">I'd like to learn more and talk about it</span>
+            </div>
+            <span class="cta-arrow">→</span>
+          </a>
+          <a href="mailto:hello@whatsfrank.com" class="cta-link">
+            <div>
+              <span class="cta-link-label">Families &amp; Consumers</span>
+              <span class="cta-link-title">I'm a family member looking for guidance</span>
+            </div>
+            <span class="cta-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">frank.</span>
+    <div class="footer-right">
+      <nav class="footer-links">
+        <a href="#why">Why Frank</a>
+        <a href="#model">The Model</a>
+        <a href="#board">The Board</a>
+        <a href="#charter">Charter Members</a>
+        <a href="#navigator">Care Navigator</a>
+      </nav>
+      <span class="footer-meta">whatsfrank.com &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; 2026</span>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll state
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Intersection observer for scroll-triggered reveals
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay || '0');
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // Stagger problem items
+    document.querySelectorAll('.problem-item').forEach((el, i) => {
+      el.dataset.delay = i * 110;
+      observer.observe(el);
+    });
+
+    // Stagger layer cards
+    document.querySelectorAll('.layer-card').forEach((el, i) => {
+      el.dataset.delay = i * 130;
+      observer.observe(el);
+    });
+
+    // Stagger seats
+    document.querySelectorAll('.seat').forEach((el, i) => {
+      el.dataset.delay = i * 80;
+      observer.observe(el);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
