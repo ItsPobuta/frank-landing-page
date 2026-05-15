@@ -39,10 +39,10 @@ const checklist = [
 export function NavigatorSection() {
   return (
     <div
-      className="bg-(--bg-warm) border-y border-(--rule) py-32 px-12 relative overflow-hidden max-[900px]:py-20 max-[900px]:px-6"
+      className="bg-(--bg-warm) border-y border-(--rule) py-32 px-12 relative max-[900px]:py-20 max-[900px]:px-6"
       id="navigator"
     >
-      <div className="max-w-300 mx-auto grid grid-cols-2 gap-24 items-start relative z-1 max-[900px]:grid-cols-1 max-[900px]:gap-12">
+      <div className="max-w-300 mx-auto grid grid-cols-2 gap-24 relative z-1 max-[900px]:grid-cols-1 max-[900px]:gap-12">
         <div>
           <p className="text-[0.68rem] font-semibold tracking-[0.2em] uppercase text-(--light) mb-6">
             For Families &nbsp;·&nbsp; The Frank Care Navigator
@@ -56,10 +56,9 @@ export function NavigatorSection() {
           </h2>
           <p className="text-[0.95rem] font-light text-(--mid) leading-[1.8] mb-6">
             Choosing a skilled nursing facility or senior care provider for a
-            parent is one of the most consequential decisions a family will
-            ever make. It often happens fast, under stress, without time to
-            research. Most families walk in unprepared — and the industry
-            knows it.
+            parent is one of the most consequential decisions a family will ever
+            make. It often happens fast, under stress, without time to research.
+            Most families walk in unprepared — and the industry knows it.
           </p>
           <p className="text-[0.95rem] font-light text-(--mid) leading-[1.8] mb-6">
             The Frank Care Navigator changes that. It is a comprehensive,
@@ -94,7 +93,7 @@ export function NavigatorSection() {
             <p className="text-[0.65rem] font-semibold tracking-[0.18em] uppercase text-(--light) mb-8 pb-6 border-b border-(--rule)">
               The Frank Care Navigator &nbsp;·&nbsp; Digital Guide
             </p>
-            <p className="font-bold text-[3.5rem] tracking-[-0.05em] text-(--black) leading-none mb-[0.4rem]">
+            <p className="font-bold text-[3.5rem] tracking-tighter text-(--black) leading-none mb-[0.4rem]">
               $25.99
             </p>
             <p className="text-[0.8rem] font-light text-(--light) mb-10">
@@ -104,7 +103,7 @@ export function NavigatorSection() {
               {checklist.map(item => (
                 <li
                   key={item}
-                  className="text-[0.88rem] font-light text-(--mid) flex gap-3 items-start leading-[1.5] before:content-['✓'] before:text-[0.75rem] before:text-(--light) before:shrink-0 before:pt-[0.1rem]"
+                  className="text-[0.88rem] font-light text-(--mid) flex gap-3 items-start leading-normal before:content-['✓'] before:text-[0.75rem] before:text-(--light) before:shrink-0 before:pt-[0.1rem]"
                 >
                   {item}
                 </li>
@@ -119,7 +118,12 @@ export function NavigatorSection() {
             <p className="text-[0.72rem] font-light text-(--light) text-center mt-5 leading-[1.6]">
               Questions? Reach us at
               <br />
-              hello@whatsfrank.com
+              <a
+                href="mailto:hello@whatsfrank.com?subject=Care Navigator Purchase"
+                className="hover:underline hover:text-black "
+              >
+                hello@whatsfrank.com
+              </a>
             </p>
           </div>
         </div>
