@@ -5,7 +5,6 @@ import { Footer } from '@/components/footer'
 import { Hero } from '@/components/hero'
 import { LayersSection } from '@/components/layers-section'
 import { Nav } from '@/components/nav'
-import { NavigatorBanner } from '@/components/navigator-banner'
 import { NavigatorSection } from '@/components/navigator-section'
 import { ProblemSection } from '@/components/problem-section'
 import { PullquoteSection } from '@/components/pullquote-section'
@@ -19,7 +18,6 @@ export default function Page() {
       <Hero />
       <ProblemSection />
       <PullquoteSection />
-      <NavigatorBanner />
       <LayersSection />
       <BoardSection />
       <CharterSection />
