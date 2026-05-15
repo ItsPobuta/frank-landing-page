@@ -64,86 +64,86 @@ export function BoardSection() {
       className="py-32 px-12 border-t border-(--rule) max-[900px]:py-20 max-[900px]:px-6"
     >
       <div className="max-w-300 mx-auto">
-      <p className="text-[0.68rem] font-semibold tracking-[0.2em] uppercase text-(--light) mb-6">
-        03 &nbsp;·&nbsp; The Governing Board
-      </p>
-      <div className="w-full h-px bg-(--rule) mb-20" />
-      <div className="grid grid-cols-[1.1fr_1fr] gap-20 items-end mb-16 max-[900px]:grid-cols-1 max-[900px]:gap-12">
-        <h2 className="text-[clamp(1.9rem,3.2vw,2.8rem)] font-bold leading-[1.08] tracking-[-0.025em]">
-          The board is not advisory.{' '}
-          <em className="italic [font-family:var(--serif)] font-normal">
-            It is the standard.
-          </em>
-        </h2>
-        <p className="text-[0.95rem] font-light text-(--mid) leading-[1.75]">
-          Frank&apos;s credibility is a function of its governance. The
-          Governing Board holds binding authority over the credentialing
-          standard — who gets in, who gets removed, and what the score
-          actually measures. Five seats. Real accountability.
+        <p className="text-[0.68rem] font-semibold tracking-[0.2em] uppercase text-(--light) mb-6">
+          03 &nbsp;·&nbsp; The Governing Board
         </p>
-      </div>
+        <div className="w-full h-px bg-(--rule) mb-20" />
+        <div className="grid grid-cols-[1.1fr_1fr] gap-20 items-end mb-16 max-[900px]:grid-cols-1 max-[900px]:gap-12">
+          <h2 className="text-[clamp(1.9rem,3.2vw,2.8rem)] font-bold leading-[1.08] tracking-[-0.025em]">
+            The board is not advisory. <br />
+            <em className="italic [font-family:var(--serif)] font-normal">
+              It is the standard.
+            </em>
+          </h2>
+          <p className="text-[0.95rem] font-light text-(--mid) leading-[1.75]">
+            Frank&apos;s credibility is a function of its governance. The
+            Governing Board holds binding authority over the credentialing
+            standard — who gets in, who gets removed, and what the score
+            actually measures. Five seats. Real accountability.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-5 border-t border-l border-(--rule) mb-16 max-[1024px]:grid-cols-3 max-[900px]:grid-cols-2 max-[580px]:grid-cols-1">
-        {seats.map(s => (
-          <div
-            className="seat py-10 px-[1.8rem] border-r border-b border-(--rule) opacity-0 translate-y-4 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-[opacity,transform,background] duration-[500ms] ease-out hover:bg-(--bg-warm)"
-            key={s.num}
-          >
-            <p className="text-[1.6rem] font-bold text-(--rule) tracking-[-0.03em] leading-none mb-[1.2rem]">
-              {s.num}
+        <div className="grid grid-cols-5 border-t border-l border-(--rule) mb-16 max-[1024px]:grid-cols-3 max-[900px]:grid-cols-2 max-[580px]:grid-cols-1">
+          {seats.map(s => (
+            <div
+              className="seat py-10 px-[1.8rem] border-r border-b border-(--rule) opacity-0 translate-y-4 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-[opacity,transform,background] duration-[500ms] ease-out hover:bg-(--bg-warm)"
+              key={s.num}
+            >
+              <p className="text-[1.6rem] font-bold text-(--rule) tracking-[-0.03em] leading-none mb-[1.2rem]">
+                {s.num}
+              </p>
+              <h3 className="text-[0.82rem] font-bold text-(--black) mb-3 tracking-[-0.01em] leading-[1.35]">
+                {s.title}
+              </h3>
+              <p className="text-[0.78rem] font-light text-(--mid) leading-[1.65]">
+                {s.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-2 gap-20 pt-14 border-t border-(--rule) max-[900px]:grid-cols-1 max-[900px]:gap-12">
+          <div>
+            <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-(--light) mb-8">
+              To be on board, the commitment:
             </p>
-            <h3 className="text-[0.82rem] font-bold text-(--black) mb-3 tracking-[-0.01em] leading-[1.35]">
-              {s.title}
-            </h3>
-            <p className="text-[0.78rem] font-light text-(--mid) leading-[1.65]">
-              {s.desc}
-            </p>
+            <ul className="list-none flex flex-col gap-4">
+              <li className={liClass}>
+                Two-year terms, staggered. Maximum four years consecutive.
+              </li>
+              <li className={liClass}>
+                Binding authority over inclusion criteria, scoring methodology,
+                and enforcement.
+              </li>
+              <li className={liClass}>
+                Annual review of the credentialing standard.
+              </li>
+              <li className={liClass}>
+                Public governance report published each year.
+              </li>
+              <li className={liClass}>
+                Annual conflict-of-interest disclosure. Mandatory recusal.
+              </li>
+              <li className={liClass}>
+                Quarterly meetings. Frank covers reasonable travel.
+              </li>
+            </ul>
           </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-2 gap-20 pt-14 border-t border-(--rule) max-[900px]:grid-cols-1 max-[900px]:gap-12">
-        <div>
-          <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-(--light) mb-8">
-            The Commitment
-          </p>
-          <ul className="list-none flex flex-col gap-4">
-            <li className={liClass}>
-              Two-year terms, staggered. Maximum four years consecutive.
-            </li>
-            <li className={liClass}>
-              Binding authority over inclusion criteria, scoring methodology,
-              and enforcement.
-            </li>
-            <li className={liClass}>
-              Annual review of the credentialing standard.
-            </li>
-            <li className={liClass}>
-              Public governance report published each year.
-            </li>
-            <li className={liClass}>
-              Annual conflict-of-interest disclosure. Mandatory recusal.
-            </li>
-            <li className={liClass}>
-              Quarterly meetings. Frank covers reasonable travel.
-            </li>
-          </ul>
+          <div>
+            <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-(--light) mb-8">
+              This Is Not a Resume Line
+            </p>
+            <p className="text-[0.95rem] font-light text-(--mid) leading-[1.8] mb-8">
+              The governing board is being constituted now. Seats are limited by
+              design. If you have spent years in this industry and you know what
+              is broken — this is the opportunity to be part of fixing it at the
+              foundation.
+            </p>
+            <a href="#contact" className="btn-primary">
+              Start the Conversation
+            </a>
+          </div>
         </div>
-        <div>
-          <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-(--light) mb-8">
-            This Is Not a Resume Line
-          </p>
-          <p className="text-[0.95rem] font-light text-(--mid) leading-[1.8] mb-8">
-            The governing board is being constituted now. Seats are limited by
-            design. If you have spent years in this industry and you know what
-            is broken — this is the opportunity to be part of fixing it at the
-            foundation.
-          </p>
-          <a href="#contact" className="btn-primary">
-            Start the Conversation
-          </a>
-        </div>
-      </div>
       </div>
     </section>
   )
