@@ -1,3 +1,8 @@
+'use client'
+
+import { useState } from 'react'
+import { ContactModal } from './contact-modal'
+
 const features = [
   {
     num: '01',
@@ -37,7 +42,10 @@ const checklist = [
 ]
 
 export function NavigatorSection() {
+  const [modalOpen, setModalOpen] = useState(false)
+
   return (
+    <>
     <div
       className="bg-(--bg-warm) border-y border-(--rule) py-32 px-12 relative max-[900px]:py-20 max-[900px]:px-6"
       id="navigator"
@@ -109,12 +117,13 @@ export function NavigatorSection() {
                 </li>
               ))}
             </ul>
-            <a
-              href="mailto:hello@whatsfrank.com?subject=Care Navigator Purchase"
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
               className="btn-white"
             >
               Purchase the Navigator — $25.99
-            </a>
+            </button>
             <p className="text-[0.72rem] font-light text-(--light) text-center mt-5 leading-[1.6]">
               Questions? Reach us at
               <br />
@@ -129,5 +138,7 @@ export function NavigatorSection() {
         </div>
       </div>
     </div>
+      <ContactModal type="hello" isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    </>
   )
 }
