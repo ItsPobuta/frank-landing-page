@@ -1,8 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { z } from 'zod'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { z } from 'zod'
 
+import { formatPhone } from '@/lib/format-phone'
+import { baseSchema, orgSchema } from '@/lib/schemas'
 import { supabase } from '@/lib/supabase'
 
 export type LeadType = 'board' | 'membership' | 'info' | 'hello'
@@ -34,28 +36,8 @@ const config: Record<LeadType, { label: string; message: string; hasOrgFields: b
   },
 }
 
-const baseSchema = z.object({
-  name: z.string().min(2, 'Please enter your full name'),
-  email: z.string().email('Please enter a valid email address'),
-  phone: z.string().regex(/^\(\d{3}\) \d{3}-\d{4}$/, 'Please enter a valid phone number'),
-  company: z.string().optional(),
-  job_title: z.string().optional(),
-})
-
-const orgSchema = baseSchema.extend({
-  company: z.string().min(1, 'Please enter your company or organization'),
-  job_title: z.string().min(1, 'Please enter your job title'),
-})
-
 type FormFields = z.infer<typeof orgSchema>
 type FieldErrors = Partial<Record<keyof FormFields, string>>
-
-function formatPhone(value: string): string {
-  const digits = value.replace(/\D/g, '').slice(0, 10)
-  if (digits.length <= 3) return digits.length ? `(${digits}` : ''
-  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
-  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
-}
 
 interface Props {
   type: LeadType
@@ -65,18 +47,24 @@ interface Props {
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
+const emptyForm: FormFields = { name: '', email: '', phone: '', company: '', job_title: '' }
+
 export function ContactModal({ type, isOpen, onClose }: Props) {
   const { label, message, hasOrgFields } = config[type]
-  const [form, setForm] = useState<FormFields>({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    job_title: '',
-  })
+  const [form, setForm] = useState<FormFields>(emptyForm)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>('idle')
   const [submitError, setSubmitError] = useState('')
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
+  const handleClose = useCallback(() => {
+    setStatus('idle')
+    setSubmitError('')
+    setFieldErrors({})
+    setForm(emptyForm)
+    onCloseRef.current()
+  }, [])
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
@@ -88,17 +76,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose() }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isOpen])
+  }, [isOpen, handleClose])
 
   if (!isOpen) return null
-
-  function handleClose() {
-    setStatus('idle')
-    setSubmitError('')
-    setFieldErrors({})
-    setForm({ name: '', email: '', phone: '', company: '', job_title: '' })
-    onClose()
-  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target
@@ -109,21 +89,20 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitError('')
 
     const schema = hasOrgFields ? orgSchema : baseSchema
     const result = schema.safeParse(form)
+
     if (!result.success) {
-      const flat = result.error.flatten().fieldErrors
-      setFieldErrors({
-        name: flat.name?.[0],
-        email: flat.email?.[0],
-        phone: flat.phone?.[0],
-        company: flat.company?.[0],
-        job_title: flat.job_title?.[0],
-      })
+      const errors: FieldErrors = {}
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as keyof FormFields
+        if (key && !errors[key]) errors[key] = issue.message
+      }
+      setFieldErrors(errors)
       return
     }
 
@@ -149,20 +128,28 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
   }
 
   function inputClass(field: keyof FormFields) {
-    const hasError = !!fieldErrors[field]
     return `w-full border bg-transparent px-4 py-3 text-[0.9rem] text-(--black) placeholder:text-(--light) outline-none transition-colors ${
-      hasError ? 'border-red-400 focus:border-red-500' : 'border-(--rule) focus:border-(--mid)'
+      fieldErrors[field]
+        ? 'border-red-400 focus:border-red-500'
+        : 'border-(--rule) focus:border-(--mid)'
     }`
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50"
-      onClick={handleClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+      {/* backdrop */}
+      <button
+        type="button"
+        aria-label="Close modal"
+        className="absolute inset-0 bg-black/50 cursor-default"
+        onClick={handleClose}
+      />
+
+      {/* panel */}
       <div
-        className="bg-(--white) border border-(--rule) w-full max-w-lg max-h-[90vh] overflow-y-auto"
-        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        className="relative bg-(--white) border border-(--rule) w-full max-w-lg max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between px-8 pt-8">
           <p className="text-[0.63rem] font-semibold tracking-[0.18em] uppercase text-(--light)">
@@ -227,33 +214,48 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
                 )}
               </div>
 
-              <input
-                name="phone"
-                type="tel"
-                placeholder="Phone number"
-                value={form.phone}
-                onChange={handleChange}
-                className={inputClass('phone')}
-              />
+              <div>
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder="Phone number"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className={inputClass('phone')}
+                />
+                {fieldErrors.phone && (
+                  <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.phone}</p>
+                )}
+              </div>
 
               {hasOrgFields && (
                 <>
-                  <input
-                    name="company"
-                    type="text"
-                    placeholder="Company / Organization"
-                    value={form.company}
-                    onChange={handleChange}
-                    className={inputClass('company')}
-                  />
-                  <input
-                    name="job_title"
-                    type="text"
-                    placeholder="Job title"
-                    value={form.job_title}
-                    onChange={handleChange}
-                    className={inputClass('job_title')}
-                  />
+                  <div>
+                    <input
+                      name="company"
+                      type="text"
+                      placeholder="Company / Organization"
+                      value={form.company}
+                      onChange={handleChange}
+                      className={inputClass('company')}
+                    />
+                    {fieldErrors.company && (
+                      <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.company}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      name="job_title"
+                      type="text"
+                      placeholder="Job title"
+                      value={form.job_title}
+                      onChange={handleChange}
+                      className={inputClass('job_title')}
+                    />
+                    {fieldErrors.job_title && (
+                      <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.job_title}</p>
+                    )}
+                  </div>
                 </>
               )}
             </div>
