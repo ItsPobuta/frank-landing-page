@@ -46,7 +46,7 @@ export function Nav() {
       <nav
         id="nav"
         className={cn(
-          'fixed top-0 left-0 right-0 z-100 flex items-center justify-between py-[1.4rem] px-12 backdrop-blur-md border-b transition-[border-color,background] duration-400 max-[900px]:py-[1.2rem] max-[900px]:px-6',
+          'fixed top-0 left-0 right-0 z-20 flex items-center justify-between py-[1.4rem] px-12 backdrop-blur-md border-b transition-[border-color,background] duration-400 max-[900px]:py-[1.2rem] max-[900px]:px-6',
           scrolled
             ? 'border-(--rule) bg-[rgba(248,248,245,0.97)]'
             : 'border-transparent bg-[rgba(248,248,245,0.90)]'
@@ -110,7 +110,7 @@ export function Nav() {
       {/* Full-screen overlay — mobile only */}
       <div
         className={cn(
-          'fixed inset-0 z-[90] transition-[opacity,visibility] duration-400',
+          'fixed inset-0 z-10 transition-[opacity,visibility] duration-400',
           menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         )}
       >
