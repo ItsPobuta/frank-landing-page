@@ -1,7 +1,9 @@
+import { createClient } from '@supabase/supabase-js'
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
-import Stripe from 'stripe'
+import type Stripe from 'stripe'
 
+import { sendCareNavigatorEmail, sendPurchaseNotification } from '@/lib/email'
 import { stripe } from '@/lib/stripe'
 import { supabase } from '@/lib/supabase'
 
@@ -14,7 +16,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!,
+      process.env.STRIPE_WEBHOOK_SECRET!
     )
   } catch {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
@@ -22,15 +24,39 @@ export async function POST(req: Request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
+    const buyerEmail = session.customer_details?.email ?? ''
+    const buyerName = session.customer_details?.name ?? null
+    const amountCents = session.amount_total ?? 2599
 
     await supabase.from('purchases').insert({
-      email: session.customer_details?.email ?? '',
-      name: session.customer_details?.name ?? null,
+      email: buyerEmail,
+      name: buyerName,
       stripe_session_id: session.id,
       stripe_payment_intent: session.payment_intent as string,
-      amount_cents: session.amount_total ?? 2599,
+      amount_cents: amountCents,
       status: 'completed',
     })
+
+    try {
+      const supabaseAdmin = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE!
+      )
+
+      const { data, error } = await supabaseAdmin.storage
+        .from('ebooks')
+        .createSignedUrl('frank_care_navigator.pdf', 60 * 60 * 48)
+
+      if (error) {
+        console.error('[webhook] signed URL generation failed:', error)
+      } else {
+        await sendCareNavigatorEmail(buyerEmail, buyerName, data.signedUrl)
+      }
+    } catch (err) {
+      console.error('[webhook] storage client error:', err)
+    }
+
+    await sendPurchaseNotification(buyerName, buyerEmail, amountCents)
   }
 
   return NextResponse.json({ received: true })
