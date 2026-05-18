@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { z } from 'zod'
 
+import { trackEvent } from '@/lib/analytics'
 import { formatPhone } from '@/lib/format-phone'
 import { baseSchema, orgSchema } from '@/lib/schemas'
 
@@ -144,6 +145,7 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
       return
     }
 
+    trackEvent('lead_form_submit', { label: type })
     setStatus('success')
   }
 

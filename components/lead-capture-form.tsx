@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { trackEvent } from '@/lib/analytics'
 import { ContactModal, type LeadType } from './contact-modal'
 
 const ctaLinks: { type: LeadType; label: string; title: string }[] = [
@@ -37,7 +38,10 @@ export function LeadCaptureForm() {
           <button
             key={link.label}
             type="button"
-            onClick={() => setActiveType(link.type)}
+            onClick={() => {
+              trackEvent('lead_form_open', { label: link.type })
+              setActiveType(link.type)
+            }}
             className="group flex items-center justify-between py-[1.3rem] px-[1.6rem] bg-(--white) border border-(--rule) mb-2 text-(--black) transition-[background,border-color] duration-200 hover:bg-(--bg) hover:border-(--mid) text-left w-full"
           >
             <div>

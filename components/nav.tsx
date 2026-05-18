@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import { trackEvent } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
 
 const links = [
@@ -131,6 +132,7 @@ export function Nav() {
               type="button"
               tabIndex={menuOpen ? 0 : -1}
               onClick={() => {
+                trackEvent('nav_click', { label: l.id })
                 close()
                 scrollToId(l.id)
               }}
@@ -143,6 +145,7 @@ export function Nav() {
             type="button"
             tabIndex={menuOpen ? 0 : -1}
             onClick={() => {
+              trackEvent('nav_cta_click', { label: 'get_involved' })
               close()
               scrollToId('contact')
             }}
