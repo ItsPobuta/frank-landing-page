@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react'
 
+import { trackEvent } from '@/lib/analytics'
+
 const seats = [
   {
     num: '01',
@@ -139,9 +141,16 @@ export function BoardSection() {
               is broken — this is the opportunity to be part of fixing it at the
               foundation.
             </p>
-            <a href="#contact" className="btn-primary">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => {
+                trackEvent('cta_click', { label: 'board_start_conversation' })
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
               Start the Conversation
-            </a>
+            </button>
           </div>
         </div>
       </div>

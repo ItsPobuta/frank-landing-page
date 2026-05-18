@@ -1,3 +1,7 @@
+'use client'
+
+import { trackEvent } from '@/lib/analytics'
+
 export function Hero() {
   return (
     <div
@@ -35,12 +39,26 @@ export function Hero() {
         </p>
 
         <div className="flex flex-wrap gap-4 opacity-0 animate-[fadeUp_0.8s_ease_forwards_0.8s]">
-          <a href="#board" className="btn-primary">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => {
+              trackEvent('cta_click', { label: 'hero_join_board' })
+              document.getElementById('board')?.scrollIntoView({ behavior: 'smooth' })
+            }}
+          >
             Join the Governing Board
-          </a>
-          <a href="#charter" className="btn-secondary">
+          </button>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              trackEvent('cta_click', { label: 'hero_become_member' })
+              document.getElementById('charter')?.scrollIntoView({ behavior: 'smooth' })
+            }}
+          >
             Become a Charter Member
-          </a>
+          </button>
         </div>
       </div>
 

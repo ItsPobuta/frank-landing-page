@@ -1,3 +1,7 @@
+'use client'
+
+import { trackEvent } from '@/lib/analytics'
+
 export function CharterSection() {
   return (
     <div className="bg-(--bg-warm) border-y border-(--rule) py-32 px-12 max-[900px]:py-20 max-[900px]:px-6" id="charter">
@@ -25,9 +29,16 @@ export function CharterSection() {
               priority review, and carry the distinction of having held the
               standard from day one.
             </p>
-            <a href="#contact" className="btn-primary">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => {
+                trackEvent('cta_click', { label: 'charter_apply' })
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
               Apply for Charter Status
-            </a>
+            </button>
           </div>
           <div>
             <div className="grid grid-cols-2 bg-(--white) border border-(--rule)">

@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import { trackEvent } from '@/lib/analytics'
+
 const features = [
   {
     num: '01',
@@ -44,6 +46,7 @@ export function NavigatorSection() {
   const [loading, setLoading] = useState(false)
 
   async function handlePurchase() {
+    trackEvent('purchase_initiated')
     setLoading(true)
     const res = await fetch('/api/checkout', { method: 'POST' })
     const { url } = await res.json()
@@ -135,7 +138,8 @@ export function NavigatorSection() {
               <br />
               <a
                 href="mailto:hello@whatsfrank.com?subject=Care Navigator Purchase"
-                className="hover:underline hover:text-black "
+                className="hover:underline hover:text-black"
+                onClick={() => trackEvent('contact_email_click', { label: 'navigator_support' })}
               >
                 hello@whatsfrank.com
               </a>
