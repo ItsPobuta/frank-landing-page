@@ -1,15 +1,18 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { z } from 'zod'
 
 import { formatPhone } from '@/lib/format-phone'
 import { baseSchema, orgSchema } from '@/lib/schemas'
-import { supabase } from '@/lib/supabase'
 
 export type LeadType = 'board' | 'membership' | 'info' | 'hello'
 
-const config: Record<LeadType, { label: string; message: string; hasOrgFields: boolean }> = {
+const config: Record<
+  LeadType,
+  { label: string; message: string; hasOrgFields: boolean }
+> = {
   board: {
     label: 'Governing Board',
     message:
@@ -47,7 +50,13 @@ interface Props {
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
-const emptyForm: FormFields = { name: '', email: '', phone: '', company: '', job_title: '' }
+const emptyForm: FormFields = {
+  name: '',
+  email: '',
+  phone: '',
+  company: '',
+  job_title: '',
+}
 
 export function ContactModal({ type, isOpen, onClose }: Props) {
   const { label, message, hasOrgFields } = config[type]
@@ -56,7 +65,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
   const [status, setStatus] = useState<Status>('idle')
   const [submitError, setSubmitError] = useState('')
   const onCloseRef = useRef(onClose)
-  onCloseRef.current = onClose
+  useEffect(() => {
+    onCloseRef.current = onClose
+  })
 
   const handleClose = useCallback(() => {
     setStatus('idle')
@@ -67,13 +78,24 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
   }, [])
 
   useEffect(() => {
+    const nav = document.getElementById('nav')
     document.body.style.overflow = isOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    if (isOpen) {
+      nav?.setAttribute('inert', '')
+    } else {
+      nav?.removeAttribute('inert')
+    }
+    return () => {
+      document.body.style.overflow = ''
+      nav?.removeAttribute('inert')
+    }
   }, [isOpen])
 
   useEffect(() => {
     if (!isOpen) return
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose() }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose()
+    }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [isOpen, handleClose])
@@ -108,19 +130,17 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
 
     setStatus('loading')
 
-    const { error } = await supabase.from('leads').insert({
-      type,
-      name: result.data.name,
-      email: result.data.email,
-      phone: result.data.phone || null,
-      ...(hasOrgFields
-        ? { company: result.data.company || null, job_title: result.data.job_title || null }
-        : {}),
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, ...result.data }),
     })
 
-    if (error) {
+    if (!res.ok) {
       setStatus('error')
-      setSubmitError('Something went wrong. Please email us at hello@whatsfrank.com')
+      setSubmitError(
+        'Something went wrong. Please email us at hello@whatsfrank.com'
+      )
       return
     }
 
@@ -135,8 +155,8 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
     }`
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+  return createPortal(
+    <div className="fixed inset-0 z-30 flex items-center justify-center p-6">
       {/* backdrop */}
       <button
         type="button"
@@ -174,7 +194,11 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
             <p className="text-[0.9rem] font-light text-(--mid) leading-[1.8]">
               We received your information and someone will be in touch soon.
             </p>
-            <button type="button" onClick={handleClose} className="btn-white mt-8">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="btn-white mt-8"
+            >
               Close
             </button>
           </div>
@@ -196,7 +220,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
                   className={inputClass('name')}
                 />
                 {fieldErrors.name && (
-                  <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.name}</p>
+                  <p className="text-[0.75rem] text-red-500 mt-1">
+                    {fieldErrors.name}
+                  </p>
                 )}
               </div>
 
@@ -210,7 +236,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
                   className={inputClass('email')}
                 />
                 {fieldErrors.email && (
-                  <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.email}</p>
+                  <p className="text-[0.75rem] text-red-500 mt-1">
+                    {fieldErrors.email}
+                  </p>
                 )}
               </div>
 
@@ -224,7 +252,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
                   className={inputClass('phone')}
                 />
                 {fieldErrors.phone && (
-                  <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.phone}</p>
+                  <p className="text-[0.75rem] text-red-500 mt-1">
+                    {fieldErrors.phone}
+                  </p>
                 )}
               </div>
 
@@ -240,7 +270,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
                       className={inputClass('company')}
                     />
                     {fieldErrors.company && (
-                      <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.company}</p>
+                      <p className="text-[0.75rem] text-red-500 mt-1">
+                        {fieldErrors.company}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -253,7 +285,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
                       className={inputClass('job_title')}
                     />
                     {fieldErrors.job_title && (
-                      <p className="text-[0.75rem] text-red-500 mt-1">{fieldErrors.job_title}</p>
+                      <p className="text-[0.75rem] text-red-500 mt-1">
+                        {fieldErrors.job_title}
+                      </p>
                     )}
                   </div>
                 </>
@@ -261,7 +295,9 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
             </div>
 
             {status === 'error' && (
-              <p className="text-[0.8rem] text-red-500 mt-4 leading-snug">{submitError}</p>
+              <p className="text-[0.8rem] text-red-500 mt-4 leading-snug">
+                {submitError}
+              </p>
             )}
 
             <button
@@ -274,6 +310,7 @@ export function ContactModal({ type, isOpen, onClose }: Props) {
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
