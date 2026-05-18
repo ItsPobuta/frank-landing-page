@@ -10,5 +10,5 @@ export function isAnalyticsEnabled(): boolean {
 
 export function trackEvent(name: string, params?: Record<string, string>) {
   if (!isAnalyticsEnabled()) return
-  sendGAEvent('event', name, params)
+  sendGAEvent('event', name, params ?? {})
 }
