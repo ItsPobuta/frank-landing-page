@@ -4,11 +4,11 @@ const RESEND_API = 'https://api.resend.com/emails'
 const FRANK_FROM = 'frank. <hello@whatsfrank.com>'
 const RON_EMAIL = 'hello@whatsfrank.com'
 
-const LEAD_FROM: Record<LeadType, string> = {
-  board: 'frank. <board@whatsfrank.com>',
-  membership: 'frank. <membership@whatsfrank.com>',
-  info: 'frank. <hello@whatsfrank.com>',
-  hello: 'frank. <hello@whatsfrank.com>',
+const LEAD_TO: Record<LeadType, string> = {
+  board: 'board@whatsfrank.com',
+  membership: 'membership@whatsfrank.com',
+  info: 'hello@whatsfrank.com',
+  hello: 'hello@whatsfrank.com',
 }
 
 const LEAD_LABEL: Record<LeadType, string> = {
@@ -90,8 +90,8 @@ export async function sendLeadNotification(lead: {
 
   try {
     await sendEmail({
-      from: LEAD_FROM[lead.type],
-      to: RON_EMAIL,
+      from: FRANK_FROM,
+      to: LEAD_TO[lead.type],
       subject: `New lead — ${label} — ${lead.name}`,
       html: leadNotificationHtml(label, lead),
     })
