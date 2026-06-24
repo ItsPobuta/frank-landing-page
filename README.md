@@ -1,5 +1,12 @@
 # Frank — Senior Care Trust Infrastructure
 
+## ⚠️ To Do (before going live with /book)
+
+- [ ] **Stripe** — Update `STRIPE_PRICE_ID` env var to the new $27.99 price ID (current value is the old $25.99 Care Navigator price)
+- [ ] **Supabase** — Upload the new book PDF to the `ebooks` storage bucket as `frank_care_navigator.pdf` (replaces the old file)
+
+---
+
 Marketing site for **Frank**, a credentialing and trust standard for the senior care industry. Built with Next.js 16, Tailwind CSS v4, Supabase, and Stripe.
 
 ---

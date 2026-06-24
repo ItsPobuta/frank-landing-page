@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session
     const buyerEmail = session.customer_details?.email ?? ''
     const buyerName = session.customer_details?.name ?? null
-    const amountCents = session.amount_total ?? 2599
+    const amountCents = session.amount_total ?? 2799
 
     await supabase.from('purchases').insert({
       email: buyerEmail,
