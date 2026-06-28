@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import { trackEvent } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
@@ -10,7 +12,13 @@ const links = [
   { id: 'model', label: 'The Model', href: '#model' },
   { id: 'board', label: 'The Board', href: '#board' },
   { id: 'charter', label: 'Charter Members', href: '#charter' },
-  { id: 'navigator', label: 'Care Navigator', href: '#navigator' },
+  { id: 'navigator', label: 'For Families', href: '#navigator' },
+]
+
+const dropdownLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'The Book', href: '/book' },
+  { label: 'Guides', href: '/guides' },
 ]
 
 const navLinkClass =
@@ -24,8 +32,11 @@ function scrollToId(id: string) {
 }
 
 export function Nav() {
+  const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40)
@@ -40,6 +51,24 @@ export function Nav() {
     }
   }, [menuOpen])
 
+  useEffect(() => {
+    if (!dropdownOpen) return
+    function handleOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === 'Escape') setDropdownOpen(false)
+    }
+    document.addEventListener('mousedown', handleOutside)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handleOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [dropdownOpen])
+
   const close = () => setMenuOpen(false)
 
   return (
@@ -53,12 +82,45 @@ export function Nav() {
             : 'border-transparent bg-[rgba(248,248,245,0.90)]'
         )}
       >
-        <a
-          href="#top"
-          className="font-bold text-[1.35rem] tracking-[-0.03em] text-(--black) no-underline"
-        >
-          frank.
-        </a>
+        {/* Logo — dropdown trigger */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setDropdownOpen(o => !o)}
+            className="flex items-center gap-1.5 font-bold text-[1.35rem] tracking-[-0.03em] text-(--black) bg-transparent border-0 cursor-pointer p-0"
+          >
+            whatsfrank.
+            <span
+              className={cn(
+                'text-[0.6rem] text-(--light) leading-none mt-0.5 transition-transform duration-200',
+                dropdownOpen && 'rotate-180'
+              )}
+            >
+              ▾
+            </span>
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute top-full left-0 mt-3 min-w-36 border border-(--rule) bg-(--bg) shadow-sm z-30">
+              {dropdownLinks.map(l => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={(e) => {
+                    if (pathname === l.href) {
+                      e.preventDefault()
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }
+                    setDropdownOpen(false)
+                  }}
+                  className="block px-5 py-3 text-[0.72rem] font-medium tracking-[0.1em] uppercase text-(--mid) no-underline hover:text-(--black) hover:bg-(--bg-warm2) transition-colors duration-150"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Desktop links */}
         <ul className="flex gap-10 list-none items-center m-0 p-0 max-[900px]:hidden">
@@ -115,7 +177,6 @@ export function Nav() {
           menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         )}
       >
-        {/* Backdrop — clicking empty space closes overlay */}
         <button
           type="button"
           aria-label="Close menu"
@@ -124,8 +185,7 @@ export function Nav() {
           className="absolute inset-0 w-full h-full bg-(--bg) cursor-default"
         />
 
-        {/* Nav links — above backdrop */}
-        <div className="relative z-1 flex flex-col items-center justify-center h-full gap-8">
+        <div className="relative z-1 flex flex-col items-center justify-center h-full gap-7">
           {links.map(l => (
             <button
               key={l.id}
@@ -141,6 +201,7 @@ export function Nav() {
               {l.label}
             </button>
           ))}
+
           <button
             type="button"
             tabIndex={menuOpen ? 0 : -1}

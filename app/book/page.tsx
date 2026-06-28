@@ -173,11 +173,12 @@ export default function BookPage() {
             }}
           />
           <Image
-            src="/book-img.webp"
+            src="/book-img-v2.webp"
             alt="frank. The Care Navigator book"
             width={560}
             height={560}
-            className="relative z-10 w-full max-w-140 drop-shadow-[0_30px_60px_rgba(0,0,0,0.18)] transition-transform duration-400 hover:rotate-[-1.5deg] hover:scale-[1.02]"
+            quality={100}
+            className="w-full max-w-140 drop-shadow-[0_30px_60px_rgba(0,0,0,0.18)]"
             priority
           />
         </div>
