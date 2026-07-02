@@ -122,7 +122,7 @@ function careNavigatorHtml(greeting: string, downloadUrl: string): string {
             <td style="padding:40px 48px;">
               <p style="margin:0 0 20px;font-size:15px;color:#111110;line-height:1.6;">${greeting}</p>
               <p style="margin:0 0 20px;font-size:15px;color:#555550;line-height:1.8;font-weight:300;">
-                [PLACEHOLDER — Ron will provide the final copy here.]
+                You're one download away from having what most families wish they'd had sooner. Thank you for getting the Care Navigator — we hope it makes the road ahead a little clearer.
               </p>
               <p style="margin:0 0 32px;font-size:15px;color:#555550;line-height:1.8;font-weight:300;">
                 One important note: the Care Navigator is a standalone guide. It does not grant access to the frank. platform or directory. The frank. directory — where facilities are scored and listed — is still under development and will be available once all facilities have been evaluated. We'll be in touch as that milestone approaches.
