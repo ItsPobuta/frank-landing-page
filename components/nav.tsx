@@ -54,7 +54,10 @@ export function Nav() {
   useEffect(() => {
     if (!dropdownOpen) return
     function handleOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false)
       }
     }
@@ -106,14 +109,14 @@ export function Nav() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  onClick={(e) => {
+                  onClick={e => {
                     if (pathname === l.href) {
                       e.preventDefault()
                       window.scrollTo({ top: 0, behavior: 'smooth' })
                     }
                     setDropdownOpen(false)
                   }}
-                  className="block px-5 py-3 text-[0.72rem] font-medium tracking-[0.1em] uppercase text-(--mid) no-underline hover:text-(--black) hover:bg-(--bg-warm2) transition-colors duration-150"
+                  className="block px-5 py-3 text-[0.72rem] font-medium tracking-widest uppercase text-(--mid) no-underline hover:text-(--black) hover:bg-(--bg-warm2) transition-colors duration-150"
                 >
                   {l.label}
                 </Link>
@@ -147,7 +150,7 @@ export function Nav() {
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(o => !o)}
-          className="hidden max-[900px]:flex flex-col justify-center items-center w-8 h-8 gap-[5px] bg-transparent border-0 cursor-pointer p-0"
+          className="hidden max-[900px]:flex flex-col justify-center items-center w-8 h-8 gap-1.25 bg-transparent border-0 cursor-pointer p-0"
         >
           <span
             className={cn(
@@ -164,7 +167,7 @@ export function Nav() {
           <span
             className={cn(
               'block w-5 h-px bg-(--black) transition-transform duration-300 origin-center',
-              menuOpen && '-translate-y-[6px] -rotate-45'
+              menuOpen && '-translate-y-1.5 -rotate-45'
             )}
           />
         </button>
