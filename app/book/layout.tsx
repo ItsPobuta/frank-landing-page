@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 const title = 'frank. — The Care Navigator Book'
 const description = 'The most comprehensive book on senior care ever written.'
-const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/book-img-v4.webp`
+const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/book-metaimage.webp`
 
 export const metadata: Metadata = {
   title,
