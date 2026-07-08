@@ -173,7 +173,7 @@ export default function BookPage() {
             }}
           />
           <Image
-            src="/book-img-v3.webp"
+            src="/book-img-v5.webp"
             alt="frank. The Care Navigator book"
             width={560}
             height={560}
