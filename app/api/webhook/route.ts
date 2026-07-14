@@ -18,7 +18,8 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     )
-  } catch {
+  } catch (err) {
+    console.error('[webhook] signature verification failed:', err)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
     const buyerName = session.customer_details?.name ?? null
     const amountCents = session.amount_total ?? 2799
 
-    await supabase.from('purchases').insert({
+    const { error: purchaseError } = await supabase.from('purchases').insert({
       email: buyerEmail,
       name: buyerName,
       stripe_session_id: session.id,
@@ -36,6 +37,10 @@ export async function POST(req: Request) {
       amount_cents: amountCents,
       status: 'completed',
     })
+
+    if (purchaseError) {
+      console.error('[webhook] purchase insert failed:', purchaseError)
+    }
 
     try {
       const supabaseAdmin = createClient(
